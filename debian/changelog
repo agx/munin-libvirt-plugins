@@ -1,0 +1,6 @@
+munin-libvirt-plugins (0.0.1-1) unstable; urgency=low
+
+  * Initial release (Closes: #502439).
+
+ -- Guido Günther <agx@sigxcpu.org>  Wed, 22 Oct 2008 10:43:56 +0200
+

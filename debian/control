@@ -1,0 +1,17 @@
+Source: munin-libvirt-plugins
+Section: net
+Priority: extra
+Maintainer: Guido Günther <agx@sigxcpu.org>
+Build-Depends: cdbs, debhelper (>= 7)
+Standards-Version: 3.8.0
+Homepage: http://honk.sigxcpu.org/projects/libvirt/#munin
+
+Package: munin-libvirt-plugins
+Architecture: all
+Depends: munin-node, python, python-libvirt, python-libxml2
+Description: Munin plugins using libvirt
+ This package contains munin plugins using libvirt:
+ . 
+  * libvirt-cputime: cputime used by virtual machines
+  * libvirt-bklstat: block I/O of virtual machines
+  * libvirt-ifstat: network I/O of virtual machines
