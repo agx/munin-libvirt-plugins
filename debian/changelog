@@ -1,3 +1,9 @@
+munin-libvirt-plugins (0.0.2-1) unstable; urgency=low
+
+  * new upstream version
+
+ -- Guido Günther <agx@sigxcpu.org>  Sun, 26 Oct 2008 15:13:50 +0100
+
 munin-libvirt-plugins (0.0.1-1) unstable; urgency=low
 
   * Initial release (Closes: #502439).
