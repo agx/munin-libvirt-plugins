@@ -5,6 +5,7 @@ Maintainer: Guido Günther <agx@sigxcpu.org>
 Build-Depends: cdbs, debhelper (>= 7)
 Standards-Version: 3.8.0
 Homepage: http://honk.sigxcpu.org/projects/libvirt/#munin
+Vcs-Git: http://honk.sigxcpu.org/git/munin-libvirt-plugins.git/
 
 Package: munin-libvirt-plugins
 Architecture: all
