@@ -9,12 +9,8 @@
 #
 # depends: python-libvirt, python-libxml2
 #
-# If you don't want to use the default uri use:
-# 
-# [libvirt-*]
-# env.uri qemu:///system
-#
-# in your plugin configuration
+#%# capabilities=autoconf
+#%# family=contrib
 
 import re, sys, os
 import libvirt
@@ -40,10 +36,12 @@ graph_info This graph shows the block device I/O of the virtual machines"""
         print "%s_read.type DERIVE" % canon(name)
         print "%s_read.min 0" % canon(name)
         print "%s_read.graph no" % canon(name)
+        print "%s_read.draw LINE1" % canon(name)
         print "%s_write.label %s" % (canon(name), name)
         print "%s_write.type DERIVE" % canon(name)
         print "%s_write.min 0" % canon(name)
         print "%s_write.negative %s_read" % (canon(name), canon(name))
+        print "%s_write.draw LINE1" % canon(name)
 
 def get_disks(dom):
     xml = dom.XMLDesc(0)
@@ -93,7 +91,7 @@ def fetch_values(uri):
 
 
 def main(sys):
-    uri = os.getenv("uri")
+    uri = os.getenv("uri", "qemu:///system")
 
     if len(sys) > 1:
         if sys[1] in [ 'autoconf', 'detect' ]:
