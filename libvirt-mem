@@ -55,8 +55,14 @@ total_pc.critical 95""" % dict(hostname=hostname)
     ids = conn.listDomainsID()
     draw = "AREA"
     for id in ids:
-        dom = conn.lookupByID(id)
-        name = dom.name()
+        try:
+            dom = conn.lookupByID(id)
+            name = dom.name()
+        except libvirt.libvirtError, err:
+            print >>sys.stderr, "Id: %s: %s" % (id, err)
+            continue
+        if name == "Domain-0":
+            continue
         print "%s_mem.label %s" % (canon(name), name)
         print "%s_mem.type GAUGE" % canon(name)
         print "%s_mem.min 0" % canon(name)
@@ -77,11 +83,17 @@ def fetch_values(uri):
     hostmem = conn.getInfo()[1] * 1024 * 1024
     print "host_mem.value %d" % hostmem
     for id in ids:
-        dom = conn.lookupByID(id)
-        name = dom.name()
+        try:
+            dom = conn.lookupByID(id)
+            name = dom.name()
+        except libvirt.libvirtError, err:
+            print >>sys.stderr, "Id: %s: %s" % (id, err)
+            continue
+        if name == "Domain-0":
+            continue
         mem = dom.info()[2] * 1024
-        total += mem
         print "%s_mem.value %d" % (canon(name), mem)
+        total += mem
     print "total.value %d" % total
     print "total_pc.value %.0f" % (100.0 * total / float(hostmem))
     return 0
