@@ -1,4 +1,4 @@
-VERSION=0.0.5
+VERSION=0.0.6
 PACKAGE=munin-libvirt-plugins
 SBINDIR=/usr/sbin
 PLUGINDIR=/usr/share/munin/plugins
@@ -15,8 +15,9 @@ PYFILES=$(patsubst %,%.py,$(PLUGINS) $(DETECT))
 all: $(DETECT)
 
 install: build
-	install -d  $(DESTDIR)$(PLUGINDIR)
+	install -d $(DESTDIR)$(PLUGINDIR)
 	install -m 755 $(PLUGINS) $(DESTDIR)$(PLUGINDIR)
+	install -d $(DESTDIR)$(SBINDIR)
 	install -m 755 $(DETECT) $(DESTDIR)$(SBINDIR)
 
 $(DETECT): $(DETECT).in
