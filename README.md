@@ -2,7 +2,8 @@ This is a set of munin plugins to monitor virtual machines managed via libvirt.
 
 See INSTALL for installation instructions.
 
-== Setting things up ==
+Setting things up
+=================
 
 Autoconfiguration is simple. Run:
 
@@ -14,26 +15,27 @@ enable all plugins.
 If you prefer to configure things by hand: The default uri used to connect to
 libvirt is "qemu:///system". This can be changed in the plugin configuration:
 
-cat <<EOF >/etc/munin/plugin-conf.d/libvirt
-[libvirt-*]
-env.uri xen:///
-EOF
+    cat <<EOF >/etc/munin/plugin-conf.d/libvirt
+	[libvirt-*]
+	env.uri xen:///
+	EOF
 
 Enabling plugins by hand is the same as with any other munin plugin:
 
-   ln -s /usr/share/munin/plugins/libvirt-<plugin> /etc/munin/plugins/
-   /etc/init.d/munin-node restart
+    ln -s /usr/share/munin/plugins/libvirt-<plugin> /etc/munin/plugins/
+    /etc/init.d/munin-node restart
 
-== Plugin Configuration ==
+Plugin Configuration
+====================
 
-libvirt-mem and libvirt-cputime support limits[1] for critical and warning
+libvirt-mem and libvirt-cputime support [limits][] for critical and warning
 values. These are set to 90% (warning) and 95% (critical) by default. However
 you can change them in /etc/munin/munin.conf:
 
-[somehost.example.com]
-libvirt_cputime.total_pc.warning  60
-libvirt_cputime.total_pc.critical 75
-libvirt_mem.total_pc.warning  25
-libvirt_mem.total_pc.critical 50
+    [somehost.example.com]
+    libvirt_cputime.total_pc.warning  60
+	libvirt_cputime.total_pc.critical 75
+	libvirt_mem.total_pc.warning  25
+	libvirt_mem.total_pc.critical 50
 
-[1]: http://munin.projects.linpro.no/wiki/HowToContact
+[limits]: http://munin.projects.linpro.no/wiki/HowToContact
