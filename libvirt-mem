@@ -34,7 +34,28 @@ def print_config(uri):
 graph_vlabel Memory Usage / Bytes
 graph_category Virtual Machines
 graph_info This graph shows the current amount of memory used by each virtual machine
-graph_args --base 1024 -l 0
+graph_args --base 1024 -l 0"""
+
+    ids = conn.listDomainsID()
+    draw = "AREA"
+    for id in ids:
+        try:
+            dom = conn.lookupByID(id)
+            name = dom.name()
+        except libvirt.libvirtError, err:
+            print >>sys.stderr, "Id: %s: %s" % (id, err)
+            continue
+        if name == "Domain-0":
+            continue
+        print "%s_mem.label %s" % (canon(name), name)
+        print "%s_mem.type GAUGE" % canon(name)
+        print "%s_mem.min 0" % canon(name)
+        print "%s_mem.draw %s" % (canon(name), draw)
+        print "%s_mem.info memory used by virtual machine '%s'" % (canon(name), name)
+        if draw == "AREA":
+            draw = "STACK"
+
+    print """
 host_mem.label %(hostname)s (host)
 host_mem.type GAUGE
 host_mem.min 0
@@ -92,24 +113,6 @@ total_soft_limit_pc.min 0
 
 """ % dict(hostname=hostname)
 
-    ids = conn.listDomainsID()
-    draw = "AREA"
-    for id in ids:
-        try:
-            dom = conn.lookupByID(id)
-            name = dom.name()
-        except libvirt.libvirtError, err:
-            print >>sys.stderr, "Id: %s: %s" % (id, err)
-            continue
-        if name == "Domain-0":
-            continue
-        print "%s_mem.label %s" % (canon(name), name)
-        print "%s_mem.type GAUGE" % canon(name)
-        print "%s_mem.min 0" % canon(name)
-        print "%s_mem.draw %s" % (canon(name), draw)
-        print "%s_mem.info memory used by virtual machine '%s'" % (canon(name), name)
-        if draw == "AREA":
-            draw = "STACK"
     return 0
 
 def get_memtune(dom):
