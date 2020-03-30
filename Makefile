@@ -28,7 +28,7 @@ $(DETECT): $(DETECT).in
 
 %.py: %
 	ln -s $< $@
-	pychecker -q -e Error $@
+	flake8 $@
 
 check: $(DETECT) $(PYFILES)
 
