@@ -18,8 +18,10 @@ import re, sys, os
 import libxml2
 import libvirt
 
+
 def canon(name):
     return re.sub(r"[^a-zA-Z0-9_]", "_", name)
+
 
 def print_config(uri):
     """print the plugin config, determine the domains"""
@@ -116,13 +118,14 @@ total_soft_limit_pc.min 0
 
     return 0
 
+
 def get_memtune(dom):
-    memtune = { 'min_guarantee': 0, 'soft_limit': 0, 'hard_limit': 0 }
+    memtune = {'min_guarantee': 0, 'soft_limit': 0, 'hard_limit': 0}
     xml = dom.XMLDesc(0)
 
     try:
         doc = libxml2.parseDoc(xml)
-    except:
+    except Exception:
         return []
 
     ctx = doc.xpathNewContext()
@@ -134,12 +137,12 @@ def get_memtune(dom):
                     memtune[key] = int(child.content)
                     break
             except IndexError:
-                    # key not found in xml
-                    pass
+                # key not found in xml
+                pass
     finally:
-        if ctx != None:
+        if ctx is not None:
             ctx.xpathFreeContext()
-        if doc != None:
+        if doc is not None:
             doc.freeDoc()
     return memtune
 
@@ -197,7 +200,7 @@ def main(sys):
     uri = os.getenv("uri", "qemu:///system")
 
     if len(sys) > 1:
-        if sys[1] in [ 'autoconf', 'detect' ]:
+        if sys[1] in ['autoconf', 'detect']:
             if libvirt.openReadOnly(uri):
                 print("yes")
                 return 0
@@ -207,6 +210,7 @@ def main(sys):
         elif sys[1] == 'config':
             return print_config(uri)
     return fetch_values(uri)
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))

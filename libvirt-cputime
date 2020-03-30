@@ -17,8 +17,10 @@ from __future__ import print_function
 import re, sys, os
 import libvirt
 
+
 def canon(name):
     return re.sub(r"[^a-zA-Z0-9_]", "_", name)
+
 
 def print_config(uri, stack):
     """print the plugin config, determine the domains"""
@@ -37,7 +39,7 @@ total_pc.info cputime used by all virtual machines
 total_pc.warning 90
 total_pc.critical 95""")
 
-    draw = [ "LINE1", "AREA"][stack]
+    draw = ["LINE1", "AREA"][stack]
     conn = libvirt.openReadOnly(uri)
     ids = conn.listDomainsID()
     for id in ids:
@@ -56,6 +58,7 @@ total_pc.critical 95""")
         print("%s_cputime.info percent of cputime used by virtual machine '%s'" % (canon(name), name))
         if draw == "AREA":
             draw = "STACK"
+
 
 def fetch_values(uri):
     conn = libvirt.openReadOnly(uri)
@@ -81,10 +84,10 @@ def fetch_values(uri):
 
 def main(sys):
     uri = os.getenv("uri", "qemu:///system")
-    stack = [ False, True ][os.getenv("stack") == "1"]
+    stack = [False, True][os.getenv("stack") == "1"]
 
     if len(sys) > 1:
-        if sys[1] in [ 'autoconf', 'detect' ]:
+        if sys[1] in ['autoconf', 'detect']:
             if libvirt.openReadOnly(uri):
                 print("yes")
                 return 0
@@ -96,6 +99,7 @@ def main(sys):
             return 0
     fetch_values(uri)
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))

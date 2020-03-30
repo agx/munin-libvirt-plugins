@@ -17,8 +17,10 @@ import re, sys, os
 import libvirt
 import libxml2
 
+
 def canon(name):
     return re.sub(r"[^a-zA-Z0-9_]", "_", name)
+
 
 def print_config(uri):
     """print the plugin config, determine the domains"""
@@ -50,12 +52,13 @@ graph_info This graph shows the block device I/O of the virtual machines""")
         print("%s_write.negative %s_read" % (canon(name), canon(name)))
         print("%s_write.draw LINE1" % canon(name))
 
+
 def get_disks(dom):
     xml = dom.XMLDesc(0)
     doc = None
     try:
         doc = libxml2.parseDoc(xml)
-    except:
+    except Exception:
         return []
     ctx = doc.xpathNewContext()
     disks = []
@@ -66,15 +69,16 @@ def get_disks(dom):
             for child in node.children:
                 if child.name == "target":
                     devdst = child.prop("dev")
-            if devdst == None:
+            if devdst is None:
                 continue
             disks.append(devdst)
     finally:
-        if ctx != None:
+        if ctx is not None:
             ctx.xpathFreeContext()
-        if doc != None:
+        if doc is not None:
             doc.freeDoc()
     return disks
+
 
 def fetch_values(uri):
     conn = libvirt.openReadOnly(uri)
@@ -107,7 +111,7 @@ def main(sys):
     uri = os.getenv("uri", "qemu:///system")
 
     if len(sys) > 1:
-        if sys[1] in [ 'autoconf', 'detect' ]:
+        if sys[1] in ['autoconf', 'detect']:
             if libvirt.openReadOnly(uri):
                 print("yes")
                 return 0
@@ -119,6 +123,7 @@ def main(sys):
             return 0
     fetch_values(uri)
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))

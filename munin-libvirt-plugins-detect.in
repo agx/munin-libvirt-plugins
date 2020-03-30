@@ -20,11 +20,12 @@ try:
 except ImportError:
     has_libvirt = False
 
-URIS = [ "xen:///", "qemu:///system" ]
+URIS = ["xen:///", "qemu:///system"]
 PLUGIN_CONF = "::MUNINCONFDIR::/plugin-conf.d/libvirt"
-PLUGINS = [ "blkstat",  "cputime", "ifstat", "mem" ]
+PLUGINS = ["blkstat", "cputime", "ifstat", "mem"]
 PLUGIN_SRC = "::PLUGINDIR::"
 PLUGIN_DST = "::MUNINCONFDIR::/plugins/"
+
 
 def check_uris(uris, force=False):
     detected = None
@@ -34,14 +35,14 @@ def check_uris(uris, force=False):
             libvirt.openReadOnly(uri)
             detected = uri
             break
-        except libvirt.libvirtError as err:
+        except libvirt.libvirtError:
             pass
 
     if detected:
         print("Hypervisor at %s detected." % detected)
         if not os.path.exists(PLUGIN_CONF) or force:
             try:
-                conf = file(PLUGIN_CONF, "w+")
+                conf = open(PLUGIN_CONF, "w+")
                 print("[libvirt-*]", file=conf)
                 print("env.uri %s""" % detected, file=conf)
                 conf.close()
@@ -73,8 +74,8 @@ def enable_plugins(force=False):
 def restart_munin_node():
     act = dict(service='munin-node', action='restart')
 
-    for path in [ '/usr/sbin/invoke-rc.d',
-                  '/sbin/service' ]:
+    for path in ['/usr/sbin/invoke-rc.d',
+                 '/sbin/service']:
         if os.path.exists(path):
             act['exec'] = path
             ret = os.system('%(exec)s %(service)s %(action)s' % act)
