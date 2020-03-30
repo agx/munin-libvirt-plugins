@@ -1,3 +1,25 @@
+munin-libvirt-plugins (0.0.7-1) unstable; urgency=medium
+
+  [ Jeroen van Meeuwen (Ergo Project) ]
+  * Correct git-archive command for Fedora/EL git implementations
+
+  [ Guido Günther ]
+  * New upstream version 0.0.7 (Closes: #937092)
+  * Switch to python3
+  * Add salsa-ci
+  * Use dh 12
+  * Bump standards version
+  * Switch priority to optional
+  * Use https URLs
+  * Switch to 3.0 (quilt)
+  * Add minimal autopkgtest
+
+  [ Valentin Lorentz ]
+  * Reorder services in libvirt-mem so they have the same color as on other
+    graphs.
+
+ -- Guido Günther <agx@sigxcpu.org>  Mon, 30 Mar 2020 10:40:36 +0200
+
 munin-libvirt-plugins (0.0.6-1) unstable; urgency=low
 
   * new upstream version
