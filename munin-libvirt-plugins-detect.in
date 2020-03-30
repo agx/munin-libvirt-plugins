@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # vim: set fileencoding=utf-8 :
 #
 # Configure and enable munin libvirt plugins
@@ -9,6 +9,7 @@
 #
 # Detect connection uri and enable plugins
 
+from __future__ import print_function
 import os
 import sys
 from optparse import OptionParser
@@ -19,11 +20,12 @@ try:
 except ImportError:
     has_libvirt = False
 
-URIS = [ "xen:///", "qemu:///system" ]
+URIS = ["xen:///", "qemu:///system"]
 PLUGIN_CONF = "::MUNINCONFDIR::/plugin-conf.d/libvirt"
-PLUGINS = [ "blkstat",  "cputime", "ifstat", "mem" ]
+PLUGINS = ["blkstat", "cputime", "ifstat", "mem"]
 PLUGIN_SRC = "::PLUGINDIR::"
 PLUGIN_DST = "::MUNINCONFDIR::/plugins/"
+
 
 def check_uris(uris, force=False):
     detected = None
@@ -33,27 +35,27 @@ def check_uris(uris, force=False):
             libvirt.openReadOnly(uri)
             detected = uri
             break
-        except libvirt.libvirtError, err:
+        except libvirt.libvirtError:
             pass
 
     if detected:
-        print "Hypervisor at %s detected." % detected
+        print("Hypervisor at %s detected." % detected)
         if not os.path.exists(PLUGIN_CONF) or force:
             try:
-                conf = file(PLUGIN_CONF, "w+")
-                print >>conf, "[libvirt-*]"
-                print >>conf, "env.uri %s""" % detected
+                conf = open(PLUGIN_CONF, "w+")
+                print("[libvirt-*]", file=conf)
+                print("env.uri %s""" % detected, file=conf)
                 conf.close()
-            except IOError, err:
-                print >>sys.stderr, err
+            except IOError as err:
+                print(err, file=sys.stderr)
                 return 1
         else:
-            print >>sys.stderr, "Plugin configuration '%s' already exists - doing nothing" % PLUGIN_CONF
+            print("Plugin configuration '%s' already exists - doing nothing" % PLUGIN_CONF, file=sys.stderr)
     return 0
 
 
 def enable_plugins(force=False):
-    for plugin in map(lambda x: "libvirt-" + x, PLUGINS):
+    for plugin in ["libvirt-" + x for x in PLUGINS]:
         src = os.path.join(PLUGIN_SRC, plugin)
         dst = os.path.join(PLUGIN_DST, plugin)
         if force:
@@ -62,9 +64,9 @@ def enable_plugins(force=False):
             except OSError:
                 pass
         if os.path.exists(dst):
-            print >>sys.stderr, "Plugin '%s' already enabled - doing nothing" % plugin
+            print("Plugin '%s' already enabled - doing nothing" % plugin, file=sys.stderr)
         else:
-            print >>sys.stderr, "Enabling plugin '%s'" % plugin
+            print("Enabling plugin '%s'" % plugin, file=sys.stderr)
             os.symlink(src, dst)
     return 0
 
@@ -72,8 +74,8 @@ def enable_plugins(force=False):
 def restart_munin_node():
     act = dict(service='munin-node', action='restart')
 
-    for path in [ '/usr/sbin/invoke-rc.d',
-                  '/sbin/service' ]:
+    for path in ['/usr/sbin/invoke-rc.d',
+                 '/sbin/service']:
         if os.path.exists(path):
             act['exec'] = path
             ret = os.system('%(exec)s %(service)s %(action)s' % act)
@@ -99,7 +101,7 @@ def main(args):
         uris = URIS
 
     if not has_libvirt:
-        print >>sys.stderr, "Libvirt not available."
+        print("Libvirt not available.", file=sys.stderr)
         return 1
 
     ret = check_uris(uris, options.force)

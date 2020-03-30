@@ -1,4 +1,4 @@
-VERSION=0.0.6
+VERSION=0.0.7
 PACKAGE=munin-libvirt-plugins
 SBINDIR=/usr/sbin
 PLUGINDIR=/usr/share/munin/plugins
@@ -28,7 +28,7 @@ $(DETECT): $(DETECT).in
 
 %.py: %
 	ln -s $< $@
-	pychecker -q -e Error $@
+	flake8 $@
 
 check: $(DETECT) $(PYFILES)
 
@@ -36,6 +36,6 @@ clean:
 	rm -f *.py *.pyc $(DETECT)
 
 dist: clean check
-	git-archive --format=tar --prefix=$(PACKAGE)-$(VERSION)/ HEAD | gzip -c > ../$(PACKAGE)-$(VERSION).tar.gz
+	git archive --format=tar --prefix=$(PACKAGE)-$(VERSION)/ HEAD | gzip -c > ../$(PACKAGE)-$(VERSION).tar.gz
 
 .PHONY: clean check dist install build
