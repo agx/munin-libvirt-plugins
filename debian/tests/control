@@ -1,0 +1,7 @@
+Test-Command: uri=test:///default /usr/share/munin/plugins/libvirt-cputime
+Depends: @, libvirt-daemon
+Restrictions: superficial
+
+Test-Command: /usr/sbin/munin-libvirt-plugins-detect --help
+Depends: @
+Restrictions: superficial
