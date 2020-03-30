@@ -2,7 +2,7 @@
 # vim: set fileencoding=utf-8 :
 #
 # Munin plugin to show the network traffic of libvirt managed virtual machines
-# 
+#
 # Copyright 2008 Guido Guenther <agx@sigxcpu.org>
 #
 # License GPLv2
@@ -75,7 +75,7 @@ def get_ifaces(dom):
         if doc != None:
             doc.freeDoc()
     return ifaces
-        
+
 def fetch_values(uri):
     conn = libvirt.openReadOnly(uri)
     ids = conn.listDomainsID()

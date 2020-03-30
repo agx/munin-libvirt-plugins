@@ -3,7 +3,7 @@
 #
 # Munin plugin to show the percent of cputime of libvirt managed virtual
 # machines
-# 
+#
 # Copyright 2008 Guido Guenther <agx@sigxcpu.org>
 #
 # License: GPLv2
