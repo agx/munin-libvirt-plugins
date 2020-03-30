@@ -1,6 +1,6 @@
 Source: munin-libvirt-plugins
 Section: net
-Priority: extra
+Priority: optional
 Maintainer: Guido Günther <agx@sigxcpu.org>
 Build-Depends:
  cdbs,
