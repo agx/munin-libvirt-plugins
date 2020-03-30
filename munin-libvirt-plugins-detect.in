@@ -9,6 +9,7 @@
 #
 # Detect connection uri and enable plugins
 
+from __future__ import print_function
 import os
 import sys
 from optparse import OptionParser
@@ -33,27 +34,27 @@ def check_uris(uris, force=False):
             libvirt.openReadOnly(uri)
             detected = uri
             break
-        except libvirt.libvirtError, err:
+        except libvirt.libvirtError as err:
             pass
 
     if detected:
-        print "Hypervisor at %s detected." % detected
+        print("Hypervisor at %s detected." % detected)
         if not os.path.exists(PLUGIN_CONF) or force:
             try:
                 conf = file(PLUGIN_CONF, "w+")
-                print >>conf, "[libvirt-*]"
-                print >>conf, "env.uri %s""" % detected
+                print("[libvirt-*]", file=conf)
+                print("env.uri %s""" % detected, file=conf)
                 conf.close()
-            except IOError, err:
-                print >>sys.stderr, err
+            except IOError as err:
+                print(err, file=sys.stderr)
                 return 1
         else:
-            print >>sys.stderr, "Plugin configuration '%s' already exists - doing nothing" % PLUGIN_CONF
+            print("Plugin configuration '%s' already exists - doing nothing" % PLUGIN_CONF, file=sys.stderr)
     return 0
 
 
 def enable_plugins(force=False):
-    for plugin in map(lambda x: "libvirt-" + x, PLUGINS):
+    for plugin in ["libvirt-" + x for x in PLUGINS]:
         src = os.path.join(PLUGIN_SRC, plugin)
         dst = os.path.join(PLUGIN_DST, plugin)
         if force:
@@ -62,9 +63,9 @@ def enable_plugins(force=False):
             except OSError:
                 pass
         if os.path.exists(dst):
-            print >>sys.stderr, "Plugin '%s' already enabled - doing nothing" % plugin
+            print("Plugin '%s' already enabled - doing nothing" % plugin, file=sys.stderr)
         else:
-            print >>sys.stderr, "Enabling plugin '%s'" % plugin
+            print("Enabling plugin '%s'" % plugin, file=sys.stderr)
             os.symlink(src, dst)
     return 0
 
@@ -99,7 +100,7 @@ def main(args):
         uris = URIS
 
     if not has_libvirt:
-        print >>sys.stderr, "Libvirt not available."
+        print("Libvirt not available.", file=sys.stderr)
         return 1
 
     ret = check_uris(uris, options.force)

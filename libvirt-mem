@@ -13,6 +13,7 @@
 #%# capabilities=autoconf
 #%# family=contrib
 
+from __future__ import print_function
 import re, sys, os
 import libxml2
 import libvirt
@@ -24,17 +25,17 @@ def print_config(uri):
     """print the plugin config, determine the domains"""
     try:
         conn = libvirt.openReadOnly(uri)
-    except libvirt.libvirtError, err:
-        print >>sys.stderr, "Error opening to %s connection: %s" % (uri, err)
+    except libvirt.libvirtError as err:
+        print("Error opening to %s connection: %s" % (uri, err), file=sys.stderr)
         return 1
 
     hostname = conn.getHostname()
 
-    print """graph_title Virtual Domain Memory Usage
+    print("""graph_title Virtual Domain Memory Usage
 graph_vlabel Memory Usage / Bytes
 graph_category Virtual Machines
 graph_info This graph shows the current amount of memory used by each virtual machine
-graph_args --base 1024 -l 0"""
+graph_args --base 1024 -l 0""")
 
     ids = conn.listDomainsID()
     draw = "AREA"
@@ -42,20 +43,20 @@ graph_args --base 1024 -l 0"""
         try:
             dom = conn.lookupByID(id)
             name = dom.name()
-        except libvirt.libvirtError, err:
-            print >>sys.stderr, "Id: %s: %s" % (id, err)
+        except libvirt.libvirtError as err:
+            print("Id: %s: %s" % (id, err), file=sys.stderr)
             continue
         if name == "Domain-0":
             continue
-        print "%s_mem.label %s" % (canon(name), name)
-        print "%s_mem.type GAUGE" % canon(name)
-        print "%s_mem.min 0" % canon(name)
-        print "%s_mem.draw %s" % (canon(name), draw)
-        print "%s_mem.info memory used by virtual machine '%s'" % (canon(name), name)
+        print("%s_mem.label %s" % (canon(name), name))
+        print("%s_mem.type GAUGE" % canon(name))
+        print("%s_mem.min 0" % canon(name))
+        print("%s_mem.draw %s" % (canon(name), draw))
+        print("%s_mem.info memory used by virtual machine '%s'" % (canon(name), name))
         if draw == "AREA":
             draw = "STACK"
 
-    print """
+    print("""
 host_mem.label %(hostname)s (host)
 host_mem.type GAUGE
 host_mem.min 0
@@ -111,7 +112,7 @@ total_soft_limit_pc.graph no
 total_soft_limit_pc.info memory soft_limit percentage of all virtual machines on host '%(hostname)s'
 total_soft_limit_pc.min 0
 
-""" % dict(hostname=hostname)
+""" % dict(hostname=hostname))
 
     return 0
 
@@ -153,18 +154,18 @@ def fetch_values(uri):
 
     try:
         conn = libvirt.openReadOnly(uri)
-    except libvirt.libvirtError, err:
-        print >>sys.stderr, "Error opening to %s connection: %s" % (uri, err)
+    except libvirt.libvirtError as err:
+        print("Error opening to %s connection: %s" % (uri, err), file=sys.stderr)
         return 1
     ids = conn.listDomainsID()
     hostmem = conn.getInfo()[1] * 1024 * 1024
-    print "host_mem.value %d" % hostmem
+    print("host_mem.value %d" % hostmem)
     for id in ids:
         try:
             dom = conn.lookupByID(id)
             name = dom.name()
-        except libvirt.libvirtError, err:
-            print >>sys.stderr, "Id: %s: %s" % (id, err)
+        except libvirt.libvirtError as err:
+            print("Id: %s: %s" % (id, err), file=sys.stderr)
             continue
         if name == "Domain-0":
             continue
@@ -173,22 +174,22 @@ def fetch_values(uri):
         maxmem *= 1024
         total += mem
         total_max += maxmem
-        print "%s_mem.value %d" % (canon(name), mem)
+        print("%s_mem.value %d" % (canon(name), mem))
         memtune = get_memtune(dom)
         min_guarantee += memtune['min_guarantee'] * 1024
         hard_limit += memtune['hard_limit'] * 1024
         soft_limit += memtune['soft_limit'] * 1024
 
-    print "total.value %d" % total
-    print "total_pc.value %.0f" % (100.0 * total / float(hostmem))
-    print "total_max.value %d" % total_max
-    print "total_max_pc.value %.0f" % (100.0 * total_max / float(hostmem))
-    print "total_min_guarantee.value %d" % min_guarantee
-    print "total_min_guarantee_pc.value %.0f" % (100.0 * min_guarantee / float(hostmem))
-    print "total_soft_limit.value %d" % soft_limit
-    print "total_soft_limit_pc.value %.0f" % (100.0 * soft_limit / float(hostmem))
-    print "total_hard_limit.value %d" % hard_limit
-    print "total_hard_limit_pc.value %.0f" % (100.0 * hard_limit / float(hostmem))
+    print("total.value %d" % total)
+    print("total_pc.value %.0f" % (100.0 * total / float(hostmem)))
+    print("total_max.value %d" % total_max)
+    print("total_max_pc.value %.0f" % (100.0 * total_max / float(hostmem)))
+    print("total_min_guarantee.value %d" % min_guarantee)
+    print("total_min_guarantee_pc.value %.0f" % (100.0 * min_guarantee / float(hostmem)))
+    print("total_soft_limit.value %d" % soft_limit)
+    print("total_soft_limit_pc.value %.0f" % (100.0 * soft_limit / float(hostmem)))
+    print("total_hard_limit.value %d" % hard_limit)
+    print("total_hard_limit_pc.value %.0f" % (100.0 * hard_limit / float(hostmem)))
     return 0
 
 
@@ -198,10 +199,10 @@ def main(sys):
     if len(sys) > 1:
         if sys[1] in [ 'autoconf', 'detect' ]:
             if libvirt.openReadOnly(uri):
-                print "yes"
+                print("yes")
                 return 0
             else:
-                print "no"
+                print("no")
                 return 1
         elif sys[1] == 'config':
             return print_config(uri)
